@@ -5,22 +5,6 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-// JavaFX
-/*
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
-import javafx.stage.Stage;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-*/
-
 /**
  * The class where the main method is located. Takes in user inputs, and processes the results of Duke's responses.
  */
@@ -46,8 +30,6 @@ public class Duke {
     public String getResponse(String inputString) throws FileNotFoundException, IOException, SecurityException {
         try {
             DukeReply dukeReply = UserInputProcessor.processUserInput(inputString, tasks);
-        
-            //printStream.print(dukeReply.dukeReplyString);
 
             if(dukeReply.shouldSave) {
                 dukeSaveLoad.attemptSave(tasks);
@@ -57,7 +39,6 @@ public class Duke {
 
             return dukeReply.dukeReplyString;
         } catch (DukeException e) {
-            //printStream.print(e.getMessage());
             return e.getMessage();
         }
     }

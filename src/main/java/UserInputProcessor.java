@@ -98,10 +98,7 @@ public class UserInputProcessor {
         try{
             String [] splitString = userInputString.split(" ");
 
-            if(splitString.length == 1) {
-                throw new DukeException(DukeTextFormatter.makeFormattedText(
-                    String.format(DukeUi.ERROR_INCOMPLETE_COMMAND, "done")));
-            }
+            checkCommandIncludesIndex(splitString, "done");
             indexString = splitString[1];
             int userSpecifiedIndex = Integer.parseInt(splitString[1]);
     
@@ -121,10 +118,7 @@ public class UserInputProcessor {
         try{
             String [] splitString = userInputString.split(" ");
 
-            if(splitString.length == 1) {
-                throw new DukeException(DukeTextFormatter.makeFormattedText(
-                    String.format(DukeUi.ERROR_INCOMPLETE_COMMAND, "delete")));
-            }
+            checkCommandIncludesIndex(splitString, "delete");
             indexString = splitString[1];
             int userSpecifiedIndex = Integer.parseInt(splitString[1]);
 
@@ -140,20 +134,25 @@ public class UserInputProcessor {
     //Duke will delete all Tasks from the list
     private static DukeReply processNukeCase(String userInputString, TaskList tasks) {
         tasks.deleteAllTasks();
+        
         return new DukeReply(false, true, DukeTextFormatter.makeFormattedText(DukeUi.FEEDBACK_NUKE));
     }
 
     //Duke will pull up all the Tasks that match the searchTerm
     private static DukeReply processFindCase(String userInputString, TaskList tasks) {
         String searchTerm = userInputString.substring(4).trim();
+        String matchingTasksAsString = tasks.getMatchingTasksAsString(searchTerm);
+
         return new DukeReply(false, true, DukeTextFormatter.makeFormattedText(
-            String.format(DukeUi.FEEDBACK_FIND, tasks.getMatchingTasksAsString(searchTerm))));
+            String.format(DukeUi.FEEDBACK_FIND, matchingTasksAsString)));
     }
 
     //Duke will create and add a new ToDoTask to the list
     private static DukeReply processToDoCase(String userInputString, TaskList tasks) throws DukeException {
         Task newlyAddedTask = TextToTaskTranslator.translateToDoTask(userInputString);
+        
         tasks.add(newlyAddedTask);
+        
         return new DukeReply(false, true, DukeTextFormatter.makeFormattedText(
             String.format(DukeUi.FEEDBACK_TASK_ADDED, newlyAddedTask.toString(), tasks.size())));
     }
@@ -161,7 +160,9 @@ public class UserInputProcessor {
     //Duke will create and add a new DeadlineTask to the list
     private static DukeReply processDeadlineCase(String userInputString, TaskList tasks) throws DukeException {
         Task newlyAddedTask = TextToTaskTranslator.translateDeadlineTask(userInputString);
+        
         tasks.add(newlyAddedTask);
+
         return new DukeReply(false, true, DukeTextFormatter.makeFormattedText(
             String.format(DukeUi.FEEDBACK_TASK_ADDED, newlyAddedTask.toString(), tasks.size())));
     }
@@ -169,8 +170,18 @@ public class UserInputProcessor {
     //Duke will create and add a new EventTask to the list
     private static DukeReply processEventCase(String userInputString, TaskList tasks) throws DukeException {
         Task newlyAddedTask = TextToTaskTranslator.translateEventTask(userInputString);
+        
         tasks.add(newlyAddedTask);
+
         return new DukeReply(false, true, DukeTextFormatter.makeFormattedText(
             String.format(DukeUi.FEEDBACK_TASK_ADDED, newlyAddedTask.toString(), tasks.size())));
+    }
+
+    //Checks that the user input command included a index for the TaskList
+    private static void checkCommandIncludesIndex(String [] splitString, String commandType) throws DukeException {
+        if(splitString.length == 1) {
+            throw new DukeException(DukeTextFormatter.makeFormattedText(
+                String.format(DukeUi.ERROR_INCOMPLETE_COMMAND, commandType)));
+        }
     }
 }

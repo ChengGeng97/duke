@@ -84,7 +84,10 @@ public class TextToTaskTranslator {
             LocalTime endTime = null;
 
             if(splitString.length == 2) {
-                if(splitString[1].contains("to") && !splitString[1].endsWith("to")) {
+                boolean bothStartAndEndDateExist
+                    = splitString[1].contains("to") && !splitString[1].endsWith("to");
+
+                if(bothStartAndEndDateExist) {
                     String [] timeSpecifications = splitString[1].split("to");
 
                     startDate = extractDateFromString(timeSpecifications[0]);
